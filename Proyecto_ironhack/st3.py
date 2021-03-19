@@ -110,6 +110,18 @@ def set_png_as_page_bg(png_file):
     st.markdown(page_bg_img, unsafe_allow_html=True)
     return
 
+def SMA(dataframes, ndays): 
+    SMA = pd.Series(dataframes['Close'].rolling(ndays).mean(), name = 'SMA') 
+    dataframes['SMA']  = SMA
+    return dataframes
+
+def EWMA(data, ndays): 
+     EMA = pd.Series(data['Close'].ewm(span = ndays, min_periods = ndays - 1).mean(), 
+     name = 'EWMA_' + str(ndays)) 
+     data = data.join(EMA) 
+     return data
+
+
 set_png_as_page_bg('C.PNG')
 
 def plo_lag(option,dataframes):
@@ -345,7 +357,8 @@ if nav == "Prediction Neuronal Network":
         a1 = a1.year
         b1 = a1+1
         b2 = dataframes['Datee'][len(dataframes)-1].year
-    
+        
+        fig = plt.figure(figsize=(7,5))
         set_entrenamiento[option].plot(legend=True)
         set_validacion[option].plot(legend=True)
     
@@ -707,7 +720,7 @@ if nav == "Statistics Indicators":
         print ("0.618", level3)
         print ("1 ", price_min)
         
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(7,5))
         ax.plot(suby_close, color='black')
         ax.axhspan(level1, price_min, alpha=0.4, color='lightsalmon')
         ax.axhspan(level2, level1, alpha=0.5, color='palegoldenrod')
@@ -723,68 +736,72 @@ if nav == "Statistics Indicators":
         st.image(image17, caption='')
         
         st.header('Moving average')
-     
-        SMA = pd.Series(dataframes['Close'].rolling(ndays).mean(), name = 'SMA') 
-        dataframes['SMA']  = SMA
+        n = st.slider( "Please choose the days for the simple moving average :",20,60,20)
+        ew =  st.slider( "Please choose the days for the exponentially Weighted Moving Averag :",50,300,200 )
+        #ndays = 50  
+        SMA_NIFTY = SMA(dataframes,n)
+        SMA_NIFTY = SMA_NIFTY.dropna()
+        SMA = SMA_NIFTY['SMA']
         
-        ndaysm = st.slider('Choose the number of days:', 0, 50, 10)
-        ndayms = 200
-        EMA = pd.Series(data['Close'].ewm(span = ndaysm, min_periods = ndaysm - 1).mean(), 
-        name = 'EWMA_' + str(ndays)) 
-        data = data.join(EMA) 
-         
-        
-    
-        SMA_NIFTY = SMA.dropna()
-        SMA = SMA_NIFTY
-        ew = 200
-        EWMA_NIFTY = EMA
+        EWMA_NIFTY = EWMA(dataframes,ew)
         EWMA_NIFTY = EWMA_NIFTY.dropna()
-        EWMA = EWMA_NIFTY
+        EWMA = EWMA_NIFTY['EWMA_200']
         
         # Plotting the NIFTY Price Series chart and Moving Averages below
-        plt.figure(figsize=(9,5))
+        plt.figure(figsize=(7,5))
         plt.plot(dataframes['Close'],lw=1, label='NSE Prices')
-        plt.plot(SMA,'g',lw=1, label='50-day SMA (green)')
-        plt.plot(EWMA,'r', lw=1, label='200-day EWMA (red)')
+        plt.plot(SMA,'g',lw=1, label=f'{n}-day SMA (green)')
+        plt.plot(EWMA,'r', lw=1, label=f'{ew}-day EWMA (red)')
         plt.legend(loc=2,prop={'size':11})
         plt.xlabel('Time')
         plt.ylabel('Price')
         plt.grid(True)
         plt.setp(plt.gca().get_xticklabels(), rotation=30)
+        
         plt.show()
-            
+        plt.savefig('ma.png')
+        image18 = Image.open('ma.png')
+        st.image(image18, caption='')
+           
         
         st.header('Ease of Movement')
-        
-        ndayse = st.slider('Choose the number of days:', 0, 50, 10)
-        
-        dm = ((dataframes['High'] + dataframes['Low'])/2) - ((dataframes['High'].shift(1) + dataframes['Low'].shift(1))/2)
-        br = (dataframes['Volume'] / 100000000) / ((dataframes['High'] - dataframes['Low']))
-        EVM = dm / br 
-        EVM_MA = pd.Series(EVM.rolling(ndayse).mean(), name = 'EVM') 
-        dataframes['EVM'] = EVM_MA  
+        n1 = st.slider( "Please choose the days for the ease of movement :",20,60,20)
     
-        EVM = dataframes['EVM'].dropna() 
+        EVM = EVM(dataframes, n1)
+        EVM = EVM['EVM']
         
-    # Plotting the Price Series chart and the Ease Of Movement below
+        # Plotting the Price Series chart and the Ease Of Movement below
         fig = plt.figure(figsize=(7,5))
         ax = fig.add_subplot(2, 1, 1)
         ax.set_xticklabels([])
         plt.plot(dataframes['Close'],lw=1)
         plt.title(' Price Chart')
-        plt.ylabel('Close Price')
+        plt.ylabel('Price')
         plt.grid(True)
         bx = fig.add_subplot(2, 1, 2)
-        plt.plot(EVM,'k',lw=0.75,linestyle='-',label='EVM(14)')
+        plt.plot(EVM,'k',lw=0.75,linestyle='-',label=f'EVM({n1})')
         plt.legend(loc=2,prop={'size':9})
         plt.ylabel('EVM values')
         plt.grid(True)
         plt.setp(plt.gca().get_xticklabels(), rotation=30)
         plt.show()
-        plt.savefig('ewm.png')
-        image18 = Image.open('ewm.png')
-        st.image(image18, caption='')
+        plt.savefig('em.png')
+        image19 = Image.open('em.png')
+        st.image(image19, caption='')
+        
+        st.header('Bollinger Bands')
+        nb = st.slider( "Please choose the days for the moving average (Bollinger Bands) :",50,100,200)
+          
+        NIFTY_BBANDS = BBANDS(dataframes, nb,option)
+        pd.concat([NIFTY_BBANDS[option],NIFTY_BBANDS.UpperBB,NIFTY_BBANDS.LowerBB],axis=1).plot(figsize=(9,5),grid=True)
+        plt.title(' Price Chart')
+        plt.ylabel('Price')
+        
+        plt.savefig('bb.png')
+        image20 = Image.open('bb.png')
+        st.image(image20, caption='')
+        
+        
         
        
         

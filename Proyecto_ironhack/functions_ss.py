@@ -209,17 +209,17 @@ def  plotsma(dataframes,ndays,SMA,EWMA):
     plt.show()
     
     
-def BBANDS(dataframes, nb):
-    MA = dataframes.Close.rolling(window=nb).mean()
-    SD = dataframes.Close.rolling(window=nb).std()
+def BBANDS(dataframes, nb,TICK):
+    MA = dataframes[TICK].rolling(window=nb).mean()
+    SD = dataframes[TICK].rolling(window=nb).std()
     dataframes['UpperBB'] = MA + (2 * SD) 
     dataframes['LowerBB'] = MA - (2 * SD)
     return dataframes
 
     
-def plotbband(dataframes, BRANDS,nb):
-    NIFTY_BBANDS = BBANDS(dataframes, nb)
-    pd.concat([NIFTY_BBANDS.Close,NIFTY_BBANDS.UpperBB,NIFTY_BBANDS.LowerBB],axis=1).plot(figsize=(9,5),grid=True)
+def plotbband(dataframes, BRANDS,nb,TICK):
+    NIFTY_BBANDS = BBANDS(dataframes, nb,TICK)
+    pd.concat([NIFTY_BBANDS[TICK],NIFTY_BBANDS.UpperBB,NIFTY_BBANDS.LowerBB],axis=1).plot(figsize=(9,5),grid=True)
     
 def ForceIndex(dataframes, nf): 
     FI = pd.Series(dataframes['Close'].diff(nf) * dataframes['Volume'], name = 'ForceIndex') 
@@ -699,7 +699,7 @@ def destranform_returns(dataframes,option,predictions):
         l1 = np.exp(predictions[i:i+1])*dataframes[option][i]
         list_1.append(list(l1)[0])
     l = list_1[:1]
-    list_1.append('0')
+    list_1.append(list_1[-1])
     
     dataframes['pre_trans'] = list_1[:len(dataframes)]
     dataframes['trans']= pd.to_numeric(dataframes['trans'], downcast='float')
