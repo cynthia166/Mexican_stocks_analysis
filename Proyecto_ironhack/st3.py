@@ -122,18 +122,18 @@ def EWMA(data, ndays):
      return data
 
 
-set_png_as_page_bg('C.PNG')
+set_png_as_page_bg('./imag/C.PNG')
 
 def plo_lag(option,dataframes):
     pd.plotting.lag_plot(dataframes[option], lag=1)
-    plt.savefig('Captura1.PNG')
+    plt.savefig('./imag/Captura1.PNG')
           
 
 
 #aqui empieza
 st.markdown( """ <style> .sidebar .sidebar-content { background-image: linear-gradient($gray-900); color: red; } </style> """, unsafe_allow_html=True, )
 
-nav = st.sidebar.selectbox("Menu",['Home', "Prediction Time Series", "Prediction Neuronal Network", 'Statistics Indicators', "Candlestick pattern recognition"])
+nav = st.sidebar.selectbox("Menu",['Home', "Prediction Time Series", "Prediction Neural Network", 'Statistics Indicators', "Candlestick pattern recognition"])
 
 unique = ["FIBRAPL14.MX","GNP.MX", "ALPEKA.MX", "GMEXICOB.MX", "PE&OLES.MX", "BIMBOA.MX", "GRUMAB.MX","SITESB-1.MX" ,"CADUA.MX"]
 Selected_stock = st.sidebar.selectbox("Stock",unique)
@@ -153,7 +153,7 @@ if nav == "Home":
    	col2.subheader('')
    	col2.subheader('')
    	
-   	col2.image('Captura.PNG',width = 500)
+   	col2.image('./imag/Captura.PNG',width = 500)
    	col2.subheader('')
    	col1.subheader('')
    
@@ -162,7 +162,7 @@ if nav == "Home":
    	col1.markdown('')
    	col1.subheader('Stock Prediction')
    	col1.markdown('')
-   	col1.markdown('This app gives you the prediction with Neuronal Networks and Time Series. It also gives you important financial indicators and an explicit explication of the candlestick pattern of each stock! ')
+   	col1.markdown('This app gives you the prediction with Neural Networks and Time Series. It also gives you important financial indicators and an explicit explication of the candlestick pattern of each stock! ')
    	col1.markdown('This app is interacts with the user to predict with Two models Autoregressive Moving Average (ARMA) and Long Short-Term Memory Networks (LSTM).')
    	col1.markdown('It gives you indicators which demonstrate de trend of the stock' )
    	col1.markdown('The app has Candlestick Pattern Recognition')
@@ -172,7 +172,7 @@ if nav == "Home":
    	col1.subheader('1. Prediction Time Series')
    	col1.markdown('')
    	
-   	col1.subheader('2. Prediction Neuronal Network ')
+   	col1.subheader('2. Prediction Neural Network ')
    	col1.markdown('')
    	
    	col1.subheader('3. Statistics Indicators')
@@ -212,8 +212,8 @@ if nav == "Prediction Time Series":
     freq_des = st.slider('Would you choose frecuency to descompose de seasonal chart', 0, 10, 50)
     
     img1 = def_seasonal(option, dataframes,TICK,freq_des)
-    plt.savefig('descomposicional.png')
-    image1 = Image.open('descomposicional.png')
+    plt.savefig('./imag/descomposicional.png')
+    image1 = Image.open('./imag/descomposicional.png')
     st.image(image1, caption='Seasonal Descompotional')
 
     try:
@@ -225,11 +225,11 @@ if nav == "Prediction Time Series":
           # # im = 
           plo_lag(option,dataframes)
           #st.image(Image.open('Captura1.png'), caption='Lag plot')
-          plt.savefig('laa.png')
+          plt.savefig('./imag/laa.png')
           st.write(' A “lag” is a fixed amount of passing time; One set of observations in a time series is plotted (lagged) against a second, later set of data. The kth lag is the time period that happened “k” time points before time i.')
-          st.image(Image.open('laa.png'), caption='Lag plot')
+          st.image(Image.open('./imag/laa.png'), caption='Lag plot')
           st.write('We will transform our Data because it is not stacionary, we will apply de following transformation:')
-          st.image(Image.open('trans.png'), caption='Continuous returns')
+          st.image(Image.open('./imag/trans.png'), caption='Continuous returns')
           st.write('After the tranformation we will apply de adfuller test again.')
           dayly_returns(dataframes,option)
           st.write('P-Value ',TICK , 'Price: ', adfuller(abs(dataframes['trans']))[1])
@@ -246,14 +246,14 @@ if nav == "Prediction Time Series":
            
           try:
               m11 = pplotacf(dataframes, lag_acf,o)
-              plt.savefig('acf.png')
-              image11 = Image.open('acf.png')
+              plt.savefig('./imag/acf.png')
+              image11 = Image.open('./imag/acf.png')
               st.image(image11, caption='')
       
             #autocorrelation function (PACF) removes the effect of shorter lag autocorrelation 
               m1 = ppltopacf(dataframes, lag_pacf,o)
-              plt.savefig('pacf.png')
-              image12 = Image.open('pacf.png')
+              plt.savefig('./imag/pacf.png')
+              image12 = Image.open('./imag/pacf.png')
               st.image(image12, caption='')
        
           except:
@@ -285,8 +285,8 @@ if nav == "Prediction Time Series":
           plt.grid(True)
           plt.setp(plt.gca().get_xticklabels(), rotation=30)
           plt.show()
-          plt.savefig('ARMA.png')
-          image13 = Image.open('ARMA.png')
+          plt.savefig('./imag/ARMA.png')
+          image13 = Image.open('./imag/ARMA.png')
           st.image(image13, caption='')
        
                 
@@ -307,9 +307,9 @@ if nav == "Prediction Time Series":
 
 
     
-if nav == "Prediction Neuronal Network":
+if nav == "Prediction Neural Network":
     
-    st.header('Neuronal Networks')
+    st.header('Neural Networks')
     
     st.markdown("""
     Long short-term memory (LSTM) is an artificial recurrent neural network (RNN) architecture A recurrent neural network (RNN) is a class of artificial neural networks where connections between nodes form a directed graph along a temporal sequence. This allows it to exhibit temporal dynamic behavior.            
@@ -364,8 +364,8 @@ if nav == "Prediction Neuronal Network":
     
         plt.legend( [f'Entrenamiento {a} a {a1}', f'Validación {b1} a {b2}'])
         plt.title(' Datos de entrenamiento y validación.')
-        plt.savefig('TRAIN.png')
-        image14 = Image.open('TRAIN.png')
+        plt.savefig('./imag/TRAIN.png')
+        image14 = Image.open('./imag/TRAIN.png')
         st.image(image14)
         
         sc = MinMaxScaler(feature_range=(0,1))
@@ -458,8 +458,8 @@ if nav == "Prediction Neuronal Network":
         plt.grid(True)
         plt.setp(plt.gca().get_xticklabels(), rotation=30)
         plt.show()
-        plt.savefig('neuronal.png')
-        image15 = Image.open('neuronal.png')
+        plt.savefig('./imag/neuronal.png')
+        image15 = Image.open('./imag/neuronal.png')
         st.image(image15, caption='')
    
 
@@ -484,12 +484,9 @@ if nav == "Candlestick pattern recognition":
     st.header('Candlestick pattern recognition')
     
     st.markdown("""
-    Candlestick charts are a technical tool that packs data for multiple time frames into single price bars. We look for bearish o bullish
-    * Pattern in order to predict based in our past. 
-    * After we normilize the training set.
-    *The LSTM will have time_step = 60 data entrance (consecutive) and a data output
-    *We let the user chose the layer and the neurons and the method to optimize.
-    * Finally we compare the predictions with our original data. 
+    Candlestick charts are a technical tool that packs data for multiple time frames into single price bars. We look for bearish o bullish pattern in order to predict based in our past. 
+    
+     
     """)
 
     TICK = Selected_stock
@@ -697,8 +694,8 @@ if nav == "Statistics Indicators":
         plt.setp(plt.gca().get_xticklabels(), rotation=30)
         plt.show()
                 
-        plt.savefig('CC1.png')
-        image16 = Image.open('CC1.png')
+        plt.savefig('./imag/CC1.png')
+        image16 = Image.open('./imag/CC1.png')
         st.image(image16, caption='')
         
         st.header('Fibunachi Retracement')
@@ -731,8 +728,8 @@ if nav == "Statistics Indicators":
         plt.xlabel("Time")
         plt.legend("close")
         plt.show()
-        plt.savefig('fibu.png')
-        image17 = Image.open('fibu.png')
+        plt.savefig('./imag/fibu.png')
+        image17 = Image.open('./imag/fibu.png')
         st.image(image17, caption='')
         
         st.header('Moving average')
@@ -759,8 +756,8 @@ if nav == "Statistics Indicators":
         plt.setp(plt.gca().get_xticklabels(), rotation=30)
         
         plt.show()
-        plt.savefig('ma.png')
-        image18 = Image.open('ma.png')
+        plt.savefig('./imag/ma.png')
+        image18 = Image.open('./imag/ma.png')
         st.image(image18, caption='')
            
         
@@ -785,8 +782,8 @@ if nav == "Statistics Indicators":
         plt.grid(True)
         plt.setp(plt.gca().get_xticklabels(), rotation=30)
         plt.show()
-        plt.savefig('em.png')
-        image19 = Image.open('em.png')
+        plt.savefig('./imag/em.png')
+        image19 = Image.open('./imag/em.png')
         st.image(image19, caption='')
         
         st.header('Bollinger Bands')
@@ -797,8 +794,8 @@ if nav == "Statistics Indicators":
         plt.title(' Price Chart')
         plt.ylabel('Price')
         
-        plt.savefig('bb.png')
-        image20 = Image.open('bb.png')
+        plt.savefig('./imag/bb.png')
+        image20 = Image.open('./imag/bb.png')
         st.image(image20, caption='')
         
         

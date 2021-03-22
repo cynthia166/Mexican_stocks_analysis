@@ -687,7 +687,7 @@ def def_seasonal(option, dataframes,TICK,freq_des):
        descomposicion = sm.tsa.seasonal_decompose(dataframes[option],model='additive', freq=freq_des)  
        fig = descomposicion.plot()
 
-       plt.savefig('descomposicional.png') 
+       plt.savefig('./imag/descomposicional.png') 
     except:
       print("Try with another freq for the descomposicion ")
 
@@ -730,7 +730,7 @@ def def_seasonal(option, dataframes,TICK,freq_des):
        descomposicion = sm.tsa.seasonal_decompose(dataframes[option],model='additive', freq=freq_des)  
        fig = descomposicion.plot()
 
-       plt.savefig('des.png')
+       plt.savefig('./imag/des.png')
     except:
       print("Try with another freq for the descomposicion ")
       
@@ -760,10 +760,10 @@ def plot_lags(lag_acf,lag_pacf,dataframes):
              
              try:
                 m11 = pplotacf(dataframes, lag_acf,o)
-                plt.savefig('acf.png')
+                plt.savefig('./imag/acf.png')
              #autocorrelation function (PACF) removes the effect of shorter lag autocorrelation 
                 m1 = ppltopacf(dataframes, lag_pacf,o)
-                plt.savefig('pacf.png')
+                plt.savefig('./imag/pacf.png')
                  
              except:
                  print("Please choose another another lower lag, with minor value.")
@@ -803,7 +803,7 @@ def modelo_altranformarlo(dayly_returns,pplotacf,dataframes,option,plot_lags,lag
         plt.grid(True)
         plt.setp(plt.gca().get_xticklabels(), rotation=30)
         plt.show()
-        plt.savefig('ARMA.png')
+        plt.savefig('./imag/ARMA.png')
         
                 
         prediction1  = pd.DataFrame(dataframes['pre_trans'])
@@ -851,7 +851,7 @@ def arma_sintrans(dataframes,lag_acf,lag_pacf,ARMA,option,p,q):
     plt.grid(True)
     plt.setp(plt.gca().get_xticklabels(), rotation=30)
     plt.show()
-    plt.savefig('ARMA.png')
+    plt.savefig('./imag/ARMA.png')
             
     #the unexplained variance, and has the useful property of being in the same units as the response variable. Lower values of RMSE indicate better fit.
     m = statsmodels.tools.eval_measures.rmse(dataframes[option], prediction[0].astype(int))
